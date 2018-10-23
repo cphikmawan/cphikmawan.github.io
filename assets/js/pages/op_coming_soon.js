@@ -7,7 +7,7 @@
 var OpComingSoon = function() {
     // Init Countdown.js, for more examples you can check out https://github.com/hilios/jQuery.countdown
     var initCounter = function(){
-        jQuery('.js-countdown').countdown((new Date().getFullYear()) + '/11/01', function(event) {
+        jQuery('.js-countdown').countdown((new Date().getFullYear() + 1) + '/01/01', function(event) {
             jQuery(this).html(event.strftime('<div class="row items-push text-center">'
                     + '<div class="col-6 col-sm-3"><div class="font-size-h1 font-w700 text-white">%-D</div><div class="font-size-xs font-w700 text-white-op">DAYS</div></div>'
                     + '<div class="col-6 col-sm-3"><div class="font-size-h1 font-w700 text-white">%H</div><div class="font-size-xs font-w700 text-white-op">HOURS</div></div>'
