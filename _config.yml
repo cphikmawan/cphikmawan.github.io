@@ -20,9 +20,9 @@ about: Laku ing sasmita, amrih lantip lan memayu hayunin bawana
 
 pre-commit:
   - check: FrontMatterVariableExists
-    variables: ['description', 'image']
+    variables: ['title', 'author', 'date', 'tags', 'categories']
   - check: FrontMatterVariableIsNotDuplicate
-    variables: ['description']
+    variables: ['title']
   - check: FrontMatterVariableMeetsLengthRequirements
-    variables: ['description', 'title']
+    variables: ['title']
   - check: NoDuplicateTags
