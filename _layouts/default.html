@@ -15,6 +15,9 @@
 
     {%- include footer.html -%}
     <script id="dsq-count-scr" src="//cphikmawan.disqus.com/count.js" async></script>
+    {% if jekyll.environment == 'production' %}
+    {% include analytics.html %}
+    {% endif %}
   </body>
 
 </html>
