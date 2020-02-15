@@ -12,13 +12,34 @@ setup: ## Setup project
 	@bundle exec jekyll pre-commit init
 
 commit: ## Run git cz for committing changes
-	@git cz
+	@bundle exec git cz
 
-serve: ## Run jekyll local development
+install: ## Run bunlde install
+	@bundle install
+
+update: ## Run bunlde update
+	@bundle update
+
+build: ## Run jekyll build
+	@bundle exec jekyll build
+
+run: ## Run jekyll local development
 	@bundle exec jekyll serve
 
-draft: ## Run jekyll local development with draft
+rundraft: ## Run jekyll local development with draft
 	@bundle exec jekyll serve --draft
 
 tag: ## Get current tags
 	@./semtag get
+
+majortag:
+	@./semtag final -s major
+
+minortag:
+	@./semtag final -s minor
+
+patchtag:
+	@./semtag final -s patch
+
+changelog: ## Create or update changelog.md files
+	@git-chglog --output CHANGELOG.md
