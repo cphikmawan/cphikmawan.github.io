@@ -11,6 +11,8 @@ description: >-
 baseurl: ""
 url: "https://cloudy.my.id"
 
+google_analytics: UA-158105644-1
+
 markdown: kramdown
 theme: minima
 plugins:
