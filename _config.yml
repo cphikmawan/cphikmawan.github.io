@@ -32,3 +32,15 @@ pre-commit:
   - check: FrontMatterVariableMeetsLengthRequirements
     variables: ['title']
   - check: NoDuplicateTags
+
+defaults:
+  -
+    scope:
+      path: "_posts/*"
+    values:
+      sitemap: false
+  - 
+    scope:
+      path: "CHANGELOG.md"
+    values:
+      sitemap: false
