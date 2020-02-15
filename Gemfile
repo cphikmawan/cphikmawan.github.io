@@ -1,6 +1,6 @@
 source "https://rubygems.org"
 
-gem "minima", "~> 2.0"
+gem "minima", :git => "https://github.com/jekyll/minima.git", :branch => "master"
 gem "github-pages", group: :jekyll_plugins
 
 # If you have any plugins, put them here!
