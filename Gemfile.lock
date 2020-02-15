@@ -257,6 +257,7 @@ DEPENDENCIES
   github-pages
   jekyll-feed (~> 0.6)
   jekyll-pre-commit
+  jekyll-seo-tag
   jekyll-sitemap
   minima!
   tzinfo (~> 1.2)
