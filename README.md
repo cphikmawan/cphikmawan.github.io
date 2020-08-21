@@ -57,5 +57,5 @@ Visit my `Github Pages` at cloudy.my.id or cphikmawan.github.io
 
 - ### Have a Question?
   
-  - Find me on [Linkedin](https://www.linkedin.com/in/cphikmawan/)
+  - Find me on [https://linktr.ee/cphikmawan](https://linktr.ee/cphikmawan)
   - Send mail on cp.hikmawan@gmail.com
