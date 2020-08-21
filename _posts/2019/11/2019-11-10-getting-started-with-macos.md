@@ -11,10 +11,6 @@ Current: MacOS Mojave
 
 For the first time I used a Macbook, I'm confused about what to do. So I will share something that is either useful or not to everyone.
 
-<!-- I'll take my videos here :) -->
-
-<!-- <iframe width="560" height="315" src="https://www.youtube.com/embed/F34e6LYro-4" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> -->
-
 ---
 
 ## What should we do?

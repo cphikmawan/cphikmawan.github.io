@@ -42,7 +42,7 @@ author: Cloudy
 
 - ### Easy Configuration
   
-  Generating configuration for p10k is pretty easy, just type `$ p10k configure`. Look at this video.
+  Generating configuration for p10k is pretty easy, just type `$ p10k configure`.
 
   <!-- Embedded video will be here. -->
 
