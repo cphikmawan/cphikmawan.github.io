@@ -32,13 +32,13 @@ rundraft: ## Run jekyll local development with draft
 tag: ## Get current tags
 	@./semtag get
 
-majortag:
+majortag:  ## Generate major tags
 	@./semtag final -s major
 
-minortag:
+minortag:  ## Generate minor tags
 	@./semtag final -s minor
 
-patchtag:
+patchtag:  ## Generate patch tags
 	@./semtag final -s patch
 
 changelog: ## Create or update changelog.md files
