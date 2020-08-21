@@ -1,6 +1,15 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Docs
+- **readme:** update readme
+
+
+<a name="v1.2.0"></a>
+## [v1.2.0] - 2020-08-21
+### Test
+- **changelog:** test changelog
+
 
 <a name="v1.1.0"></a>
 ## [v1.1.0] - 2020-08-21
@@ -48,5 +57,6 @@
 - **tools:** add dev tools
 
 
-[Unreleased]: https://github.com/cphikmawan/cphikmawan.github.io/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/cphikmawan/cphikmawan.github.io/compare/v1.2.0...HEAD
+[v1.2.0]: https://github.com/cphikmawan/cphikmawan.github.io/compare/v1.1.0...v1.2.0
 [v1.1.0]: https://github.com/cphikmawan/cphikmawan.github.io/compare/v1.0.0...v1.1.0
