@@ -1,0 +1,48 @@
+---
+layout:   page
+title:    Tags
+permalink: /tags/
+---
+{% comment%}
+Here we generate all the tags.
+{% endcomment%}
+
+{% assign rawtags = "" %}
+{% for post in site.posts %}
+{% assign ttags = post.tags | join:'|' | append:'|' %}
+{% assign rawtags = rawtags | append:ttags %}
+{% endfor %}
+
+{% assign rawtags = rawtags | split:'|' | sort %}
+
+{% assign tags = "" %}
+
+{% for tag in rawtags %}
+{% if tag != "" %}
+
+{% if tags == "" %}
+{% assign tags = tag | split:'|' %}
+{% endif %}
+
+{% unless tags contains tag %}
+{% assign tags = tags | join:'|' | append:'|' | append:tag | split:'|' %}
+{% endunless %}
+{% endif %}
+{% endfor %}
+
+<div class="posts">
+  {% for tag in tags %}
+    <a class="post-tag2" href="#{{ tag | slugify }}"><i class="fa fa-tag"> </i> {{ tag }}</a>
+  {% endfor %}
+  <p></p>
+  {% for tag in tags %}
+    <h3 id="{{ tag | slugify }}" class="category-head"><i class="fa fa-chevron-circle-right"></i> {{ tag }}</h3>
+    {% for post in site.posts %}
+      {% if post.tags contains tag %}
+        <article class="archive-item">
+          <h4><a href="{{ site.baseurl }}{{ post.url }}"><li>{{ post.title }}</li></a></h4>
+        </article>
+      {% endif %}
+    {% endfor %}
+  {% endfor %}
+</div>
