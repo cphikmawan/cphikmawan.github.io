@@ -206,17 +206,7 @@
       background: var(--surface);
       border-right: 1px solid var(--border);
       padding: 36px 28px;
-      position: sticky;
-      top: 0;
-      height: 100vh;
-      overflow-y: auto;
-      scrollbar-width: thin;
-      scrollbar-color: var(--border) transparent;
     }
-
-    .sidebar::-webkit-scrollbar       { width: 4px; }
-    .sidebar::-webkit-scrollbar-track { background: transparent; }
-    .sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 
     .sidebar-section { margin-bottom: 36px; }
 
@@ -592,9 +582,6 @@
       .sidebar {
         background: #f5f7fa !important;
         border-right: 1px solid #dde3ed !important;
-        position: static !important;
-        height: auto !important;
-        overflow: visible !important;
         padding: 20px 16px;
         -webkit-print-color-adjust: exact;
         print-color-adjust: exact;
