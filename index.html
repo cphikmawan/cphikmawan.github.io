@@ -1,74 +1,1040 @@
----
-layout: default
----
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cahya P. Hikmawan — Senior SRE</title>
+  <meta name="description" content="Senior Site Reliability Engineer with 6+ years designing resilient infrastructure on GCP, Kubernetes, and beyond." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Sora:wght@300;400;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    /* ─── Reset & Base ─────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-<div class="home">
-  <h2 class="post-list-heading">{{ page.list_title | default: "All Posts" }}</h2>
-  <ul class="post-list">
-  {% for post in paginator.posts %}
-  <li>
-    {%- assign date_format = site.minima.date_format | default: "%b %-d, %Y" -%}
-    <span class="post-meta">{{ post.date | date: date_format }} • Posted by {{ post.author }}</span>
-    <h2>
-      <a class="post-link" href="{{ post.url | relative_url }}">
-        {{ post.title | escape }}
-      </a>
-      {%- if post.categories -%}
-        <div class="post-categories">
-          {% if post %}
-            {% assign categories = post.categories %}
-          {% else %}
-            {% assign categories = page.categories %}
-          {% endif %}
-          {% for category in categories %}
-          <span class="post-meta">Categories: <a class="post-tag" href="{{ site.baseurl }}/category/#{{ category | slugify }}">{{ category }}</a></span> 
-          {% unless forloop.last %}&nbsp;{% endunless %}
-          {% endfor %}
+    :root {
+      --bg:          #070c14;
+      --surface:     #0d1520;
+      --card:        #111d2e;
+      --card-hover:  #162238;
+      --border:      #1c3050;
+      --border-soft: #152540;
+      --teal:        #00d4aa;
+      --teal-dim:    #00a888;
+      --teal-glow:   rgba(0, 212, 170, 0.15);
+      --blue:        #3b82f6;
+      --blue-dim:    #2563eb;
+      --blue-glow:   rgba(59, 130, 246, 0.12);
+      --amber:       #f59e0b;
+      --text-1:      #e8f0fe;
+      --text-2:      #8ba8cc;
+      --text-3:      #4a6480;
+      --mono:        'JetBrains Mono', monospace;
+      --sans:        'Sora', sans-serif;
+      --sidebar-w:   300px;
+      --radius:      8px;
+      --radius-sm:   5px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--sans);
+      background-color: var(--bg);
+      color: var(--text-1);
+      line-height: 1.6;
+      min-height: 100vh;
+      background-image:
+        radial-gradient(circle at 20% 20%, rgba(0,212,170,0.04) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(59,130,246,0.04) 0%, transparent 50%),
+        radial-gradient(var(--border-soft) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 28px 28px;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    /* ─── PDF Button ─────────────────────────────────────── */
+    .pdf-btn {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 18px;
+      background: var(--teal);
+      color: #070c14;
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(0,212,170,0.35);
+      transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
+    }
+
+    .pdf-btn:hover {
+      background: var(--teal-dim);
+      box-shadow: 0 6px 28px rgba(0,212,170,0.45);
+      transform: translateY(-1px);
+    }
+
+    .pdf-btn:active { transform: translateY(0); }
+
+    .pdf-btn svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+    /* ─── Layout ────────────────────────────────────────── */
+    .layout {
+      display: grid;
+      grid-template-columns: var(--sidebar-w) 1fr;
+      grid-template-rows: auto 1fr auto;
+      min-height: 100vh;
+    }
+
+    /* ─── Header ─────────────────────────────────────────── */
+    .site-header {
+      grid-column: 1 / -1;
+      background: linear-gradient(135deg, #0d1520 0%, #0a1828 50%, #0d1520 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 48px 48px 40px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .site-header::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent 0%, var(--teal-glow) 50%, transparent 100%);
+      pointer-events: none;
+    }
+
+    .site-header::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--teal), var(--blue), transparent);
+    }
+
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: flex-end;
+      gap: 32px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .header-name-block { flex: 1; }
+
+    .header-prompt {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--teal);
+      letter-spacing: 0.08em;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .header-prompt::before {
+      content: '';
+      display: block;
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--teal);
+      box-shadow: 0 0 8px var(--teal);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.4; }
+    }
+
+    .header-name {
+      font-size: clamp(36px, 5vw, 60px);
+      font-weight: 800;
+      line-height: 1.0;
+      letter-spacing: -0.03em;
+      background: linear-gradient(135deg, var(--text-1) 0%, #a8c0e0 60%, var(--teal) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .header-tagline {
+      margin-top: 10px;
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--text-2);
+      letter-spacing: 0.04em;
+    }
+
+    .header-tagline span { color: var(--teal); }
+
+    .header-badges {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: flex-end;
+    }
+
+    .badge {
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      padding: 4px 10px;
+      border-radius: 3px;
+      text-transform: uppercase;
+    }
+
+    .badge-teal  { background: rgba(0,212,170,0.12); color: var(--teal);  border: 1px solid rgba(0,212,170,0.3);  }
+    .badge-blue  { background: rgba(59,130,246,0.12); color: var(--blue);  border: 1px solid rgba(59,130,246,0.3);  }
+    .badge-amber { background: rgba(245,158,11,0.12); color: var(--amber); border: 1px solid rgba(245,158,11,0.3); }
+
+    /* ─── Sidebar ────────────────────────────────────────── */
+    .sidebar {
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      padding: 36px 28px;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border) transparent;
+    }
+
+    .sidebar::-webkit-scrollbar       { width: 4px; }
+    .sidebar::-webkit-scrollbar-track { background: transparent; }
+    .sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+    .sidebar-section { margin-bottom: 36px; }
+
+    .sidebar-label {
+      font-family: var(--mono);
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .sidebar-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* Contact */
+    .contact-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 12.5px;
+      color: var(--text-2);
+      transition: color 0.2s;
+    }
+
+    .contact-item a:hover { color: var(--teal); }
+
+    .contact-icon {
+      width: 28px; height: 28px;
+      border-radius: var(--radius-sm);
+      background: var(--card);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: var(--teal);
+    }
+
+    .contact-icon svg { width: 13px; height: 13px; }
+
+    /* Skills */
+    .skill-category { margin-bottom: 18px; }
+
+    .skill-category-name {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--blue);
+      letter-spacing: 0.06em;
+      margin-bottom: 7px;
+      font-weight: 500;
+    }
+
+    .tag-cloud { display: flex; flex-wrap: wrap; gap: 5px; }
+
+    .tag {
+      font-family: var(--mono);
+      font-size: 10px;
+      padding: 3px 7px;
+      border-radius: 3px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--text-2);
+      white-space: nowrap;
+      transition: all 0.2s;
+      cursor: default;
+    }
+
+    .tag:hover { background: var(--card-hover); border-color: var(--teal-dim); color: var(--teal); }
+    .tag.primary { background: rgba(0,212,170,0.08); border-color: rgba(0,212,170,0.25); color: var(--teal); }
+
+    /* Education */
+    .edu-block {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+    }
+
+    .edu-school   { font-size: 12px; font-weight: 600; color: var(--text-1); line-height: 1.4; }
+    .edu-degree   { font-size: 11px; color: var(--teal); margin-top: 4px; font-family: var(--mono); }
+    .edu-year     { font-size: 10px; color: var(--text-3); font-family: var(--mono); margin-top: 4px; }
+    .edu-thesis   { font-size: 10px; color: var(--text-3); margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); font-style: italic; line-height: 1.5; }
+
+    /* ─── Main ───────────────────────────────────────────── */
+    .main { padding: 40px 48px; overflow-y: auto; }
+
+    .section { margin-bottom: 52px; }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+
+    .section-title {
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      white-space: nowrap;
+    }
+
+    .section-title span { color: var(--teal); margin-right: 6px; }
+
+    .section-line { flex: 1; height: 1px; background: linear-gradient(90deg, var(--border), transparent); }
+
+    /* Summary */
+    .summary-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--teal);
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      font-size: 14px;
+      line-height: 1.8;
+      color: var(--text-2);
+    }
+
+    .summary-card strong { color: var(--text-1); font-weight: 600; }
+
+    /* Timeline */
+    .timeline { position: relative; }
+
+    .timeline-item {
+      position: relative;
+      padding-left: 20px;
+      margin-bottom: 8px;
+    }
+
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 2px;
+      background: var(--border);
+      border-radius: 1px;
+    }
+
+    .timeline-item:hover::before {
+      background: linear-gradient(to bottom, var(--teal), var(--blue));
+    }
+
+    .timeline-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 22px 24px;
+      transition: border-color 0.25s, background 0.25s, box-shadow 0.25s;
+    }
+
+    .timeline-card:hover {
+      background: var(--card-hover);
+      box-shadow: 0 4px 24px rgba(0,0,0,0.3), 0 0 0 1px rgba(0,212,170,0.06);
+    }
+
+    .timeline-dot {
+      position: absolute;
+      left: -5px; top: 24px;
+      width: 12px; height: 12px;
+      border-radius: 50%;
+      background: var(--bg);
+      border: 2px solid var(--border);
+      z-index: 1;
+      transition: border-color 0.25s;
+    }
+
+    .timeline-item:hover .timeline-dot { border-color: var(--teal); }
+
+    .timeline-dot.active {
+      border-color: var(--teal);
+      background: var(--teal);
+      box-shadow: 0 0 10px var(--teal);
+    }
+
+    .job-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 6px;
+      flex-wrap: wrap;
+    }
+
+    .job-company { font-size: 11px; font-family: var(--mono); color: var(--blue); letter-spacing: 0.04em; margin-bottom: 4px; }
+    .job-title   { font-size: 16px; font-weight: 700; color: var(--text-1); letter-spacing: -0.01em; }
+    .job-title.senior { color: var(--teal); }
+
+    .job-period {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-3);
+      white-space: nowrap;
+      padding: 3px 8px;
+      border-radius: 3px;
+      background: var(--surface);
+      border: 1px solid var(--border-soft);
+      flex-shrink: 0;
+      align-self: flex-start;
+    }
+
+    .job-bullets { margin-top: 14px; list-style: none; display: flex; flex-direction: column; gap: 7px; }
+
+    .job-bullets li {
+      font-size: 13px;
+      color: var(--text-2);
+      line-height: 1.65;
+      padding-left: 18px;
+      position: relative;
+    }
+
+    .job-bullets li::before {
+      content: '▸';
+      position: absolute;
+      left: 0;
+      color: var(--teal);
+      font-size: 10px;
+      top: 3px;
+    }
+
+    /* Connector between same-company entries */
+    .timeline-connector {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding-left: 20px;
+      margin: 6px 0;
+    }
+
+    .connector-label { font-family: var(--mono); font-size: 9px; color: var(--text-3); letter-spacing: 0.1em; text-transform: uppercase; white-space: nowrap; }
+    .connector-arrow { font-size: 14px; color: var(--teal); line-height: 1; }
+
+    /* Projects */
+    .project-grid { display: grid; gap: 14px; }
+
+    .project-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px 22px;
+      transition: border-color 0.25s, background 0.25s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .project-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--blue), var(--teal));
+      opacity: 0;
+      transition: opacity 0.25s;
+    }
+
+    .project-card:hover { background: var(--card-hover); border-color: rgba(59,130,246,0.3); }
+    .project-card:hover::before { opacity: 1; }
+
+    .project-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 10px; flex-wrap: wrap; }
+    .project-company { font-size: 10px; font-family: var(--mono); color: var(--blue); letter-spacing: 0.04em; margin-bottom: 3px; }
+    .project-title   { font-size: 14px; font-weight: 600; color: var(--text-1); }
+
+    .project-period {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--text-3);
+      padding: 2px 7px;
+      border-radius: 3px;
+      background: var(--surface);
+      border: 1px solid var(--border-soft);
+      flex-shrink: 0;
+    }
+
+    .project-bullets { list-style: none; display: flex; flex-direction: column; gap: 5px; }
+
+    .project-bullets li {
+      font-size: 12.5px;
+      color: var(--text-2);
+      line-height: 1.6;
+      padding-left: 16px;
+      position: relative;
+    }
+
+    .project-bullets li::before {
+      content: '›';
+      position: absolute;
+      left: 0;
+      color: var(--blue);
+      font-size: 14px;
+      line-height: 1.3;
+    }
+
+    /* ─── Footer ─────────────────────────────────────────── */
+    .site-footer {
+      grid-column: 1 / -1;
+      border-top: 1px solid var(--border);
+      padding: 20px 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--surface);
+    }
+
+    .footer-text { font-family: var(--mono); font-size: 10px; color: var(--text-3); }
+    .footer-text span { color: var(--teal); }
+
+    /* ─── Responsive ─────────────────────────────────────── */
+    @media (max-width: 900px) {
+      .layout { grid-template-columns: 1fr; }
+      .sidebar { position: static; height: auto; border-right: none; border-bottom: 1px solid var(--border); padding: 28px 24px; }
+      .site-header { padding: 32px 24px 28px; }
+      .header-inner { flex-direction: column; align-items: flex-start; gap: 20px; }
+      .main { padding: 28px 24px; }
+      .site-footer { padding: 16px 24px; flex-direction: column; gap: 8px; text-align: center; }
+      .pdf-btn { bottom: 16px; right: 16px; }
+    }
+
+    @media (max-width: 600px) {
+      .job-header, .project-header { flex-direction: column; }
+      .job-period, .project-period { align-self: flex-start; }
+    }
+
+    /* ─── Print / PDF ────────────────────────────────────── */
+    @media print {
+      @page { margin: 14mm 12mm; size: A4; }
+
+      body {
+        background: #fff !important;
+        color: #111 !important;
+        background-image: none !important;
+        font-size: 11px;
+      }
+
+      .pdf-btn { display: none !important; }
+
+      .layout {
+        display: grid;
+        grid-template-columns: 200px 1fr;
+        min-height: auto;
+      }
+
+      .site-header {
+        background: #1a2332 !important;
+        padding: 24px 28px 20px;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      .header-name {
+        font-size: 32px !important;
+        -webkit-text-fill-color: #e8f0fe !important;
+        background: none !important;
+        color: #e8f0fe !important;
+      }
+
+      .header-prompt { display: none; }
+      .header-badges { display: none; }
+      .header-tagline { font-size: 11px; }
+
+      .sidebar {
+        background: #f5f7fa !important;
+        border-right: 1px solid #dde3ed !important;
+        position: static !important;
+        height: auto !important;
+        overflow: visible !important;
+        padding: 20px 16px;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      .main { padding: 20px 24px; }
+
+      .timeline-card, .project-card, .summary-card, .edu-block {
+        background: #fff !important;
+        border-color: #dde3ed !important;
+        box-shadow: none !important;
+        break-inside: avoid;
+      }
+
+      .timeline-card:hover, .project-card:hover { background: #fff !important; }
+
+      .job-company, .project-company { color: #1a6ea8 !important; }
+      .job-title { color: #111 !important; }
+      .job-title.senior { color: #007a60 !important; }
+
+      .section-title { color: #6b7280 !important; }
+      .section-title span { color: #007a60 !important; }
+
+      .job-period, .project-period { background: #f0f2f5 !important; border-color: #dde3ed !important; color: #555 !important; }
+
+      .job-bullets li, .project-bullets li { color: #333 !important; }
+      .job-bullets li::before { color: #007a60 !important; }
+      .project-bullets li::before { color: #1a6ea8 !important; }
+
+      .tag { background: #f0f2f5 !important; border-color: #ccc !important; color: #333 !important; }
+      .tag.primary { background: #e0f7f3 !important; border-color: #00a888 !important; color: #006655 !important; }
+
+      .skill-category-name { color: #1a6ea8 !important; }
+      .sidebar-label { color: #007a60 !important; }
+      .edu-degree { color: #007a60 !important; }
+
+      .timeline-dot { background: #fff !important; border-color: #bbb !important; box-shadow: none !important; }
+      .timeline-dot.active { background: #007a60 !important; border-color: #007a60 !important; }
+
+      .timeline-item::before { background: #dde3ed !important; }
+      .sidebar-label::after { background: #dde3ed !important; }
+      .section-line { background: linear-gradient(90deg, #dde3ed, transparent) !important; }
+
+      .summary-card { border-left-color: #007a60 !important; }
+      .summary-card strong { color: #111 !important; }
+
+      .edu-thesis, .edu-year { color: #777 !important; }
+      .contact-item { color: #444 !important; }
+      .contact-icon { background: #f0f2f5 !important; border-color: #dde3ed !important; color: #007a60 !important; }
+
+      .site-footer { display: none !important; }
+      .connector-label { color: #999 !important; }
+      .connector-arrow { color: #007a60 !important; }
+
+      a { color: inherit !important; text-decoration: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- PDF / Print button -->
+<button class="pdf-btn" onclick="window.print()" title="Save as PDF or print">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="8 17 12 21 16 17"/>
+    <line x1="12" y1="12" x2="12" y2="21"/>
+    <path d="M20.88 18.09A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.29"/>
+  </svg>
+  Export PDF
+</button>
+
+<div class="layout">
+
+  <!-- ══ HEADER ══════════════════════════════════════════ -->
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="header-name-block">
+        <div class="header-prompt">ONLINE · OPEN TO OPPORTUNITIES</div>
+        <div class="header-name">Cahya P. Hikmawan</div>
+        <div class="header-tagline">
+          <span>~/</span> Senior Site Reliability Engineer &nbsp;·&nbsp; Platform &amp; Infrastructure
         </div>
-      {%- endif -%}
-      {%- if post.tags -%}
-        <div class="post-tags">
-          {% if post %}
-            {% assign tags = post.tags %}
-          {% else %}
-            {% assign tags = page.tags %}
-          {% endif %}
-          {% for tag in tags %}
-          <span class="post-meta"><a class="post-tag" href="{{ site.baseurl }}/tags/#{{ tag | slugify }}"><i class="fa fa-tag"> </i> {{ tag }}</a></span>
-          {% unless forloop.last %}{% endunless %}
-          {% endfor %}
+      </div>
+      <div class="header-badges">
+        <span class="badge badge-teal">GCP Specialist</span>
+        <span class="badge badge-blue">Kubernetes</span>
+        <span class="badge badge-amber">6+ Years</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ══ SIDEBAR ══════════════════════════════════════════ -->
+  <aside class="sidebar">
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Contact</div>
+      <ul class="contact-list">
+        <li class="contact-item">
+          <span class="contact-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          </span>
+          <span>Sidoarjo, East Java, Indonesia</span>
+        </li>
+        <li class="contact-item">
+          <span class="contact-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.15 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.06 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.09 8.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21 16z"/></svg>
+          </span>
+          <a href="tel:REDACTED_PHONE">REDACTED_PHONE</a>
+        </li>
+        <li class="contact-item">
+          <span class="contact-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          </span>
+          <a href="mailto:REDACTED_EMAIL">REDACTED_EMAIL</a>
+        </li>
+        <li class="contact-item">
+          <span class="contact-icon">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+          </span>
+          <a href="https://linkedin.com/in/cphikmawan" target="_blank" rel="noopener">linkedin.com/in/cphikmawan</a>
+        </li>
+        <li class="contact-item">
+          <span class="contact-icon">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0 1 12 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+          </span>
+          <a href="https://github.com/cphikmawan" target="_blank" rel="noopener">github.com/cphikmawan</a>
+        </li>
+      </ul>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Technical Skills</div>
+
+      <div class="skill-category">
+        <div class="skill-category-name">// Cloud Platforms</div>
+        <div class="tag-cloud">
+          <span class="tag primary">GCP</span>
+          <span class="tag">AWS</span>
+          <span class="tag">DigitalOcean</span>
+          <span class="tag">Alibaba Cloud</span>
         </div>
-      {%- endif -%}
-    </h2>
-    
-  </li>
-  {% endfor %}
-  </ul>
+      </div>
 
-  <!-- Pagination links -->
-  {% if paginator.total_pages > 1 %}
-  <div class="pagination">
-    {% if paginator.previous_page %}
-      <a href="{{ paginator.previous_page_path | relative_url }}">&laquo; Prev</a>
-    {% else %}
-      <span>&laquo; Prev</span>
-    {% endif %}
+      <div class="skill-category">
+        <div class="skill-category-name">// Containerization</div>
+        <div class="tag-cloud">
+          <span class="tag primary">Kubernetes</span>
+          <span class="tag primary">GKE</span>
+          <span class="tag">Docker</span>
+          <span class="tag">Proxmox</span>
+        </div>
+      </div>
 
-    {% for page in (1..paginator.total_pages) %}
-      {% if page == paginator.page %}
-        <em>{{ page }}</em>
-      {% elsif page == 1 %}
-        <a href="{{ paginator.previous_page_path | relative_url }}">{{ page }}</a>
-      {% else %}
-        <a href="{{ site.paginate_path | relative_url | replace: ':num', page }}">{{ page }}</a>
-      {% endif %}
-    {% endfor %}
+      <div class="skill-category">
+        <div class="skill-category-name">// Observability</div>
+        <div class="tag-cloud">
+          <span class="tag">Prometheus</span>
+          <span class="tag">Grafana</span>
+          <span class="tag">VictoriaMetrics</span>
+          <span class="tag">CortexMetrics</span>
+          <span class="tag">Thanos</span>
+          <span class="tag">Loki</span>
+          <span class="tag">Alertmanager</span>
+          <span class="tag">ELK Stack</span>
+          <span class="tag">Grafonnet</span>
+        </div>
+      </div>
 
-    {% if paginator.next_page %}
-      <a href="{{ paginator.next_page_path | relative_url }}">Next &raquo;</a>
-    {% else %}
-      <span>Next &raquo;</span>
-    {% endif %}
-  </div>
-  {% endif %}
+      <div class="skill-category">
+        <div class="skill-category-name">// CI/CD</div>
+        <div class="tag-cloud">
+          <span class="tag primary">ArgoCD</span>
+          <span class="tag">Jenkins</span>
+          <span class="tag">GitHub Actions</span>
+          <span class="tag">Atlantis</span>
+        </div>
+      </div>
+
+      <div class="skill-category">
+        <div class="skill-category-name">// IaC &amp; Automation</div>
+        <div class="tag-cloud">
+          <span class="tag primary">Terraform</span>
+          <span class="tag">Terragrunt</span>
+          <span class="tag">Ansible</span>
+          <span class="tag">Packer</span>
+        </div>
+      </div>
+
+      <div class="skill-category">
+        <div class="skill-category-name">// Service Mesh</div>
+        <div class="tag-cloud">
+          <span class="tag">Istio</span>
+          <span class="tag">Flagger</span>
+          <span class="tag">Jaeger</span>
+          <span class="tag">Zipkin</span>
+        </div>
+      </div>
+
+      <div class="skill-category">
+        <div class="skill-category-name">// Scripting</div>
+        <div class="tag-cloud">
+          <span class="tag">Python</span>
+          <span class="tag">Shell/Bash</span>
+        </div>
+      </div>
+
+      <div class="skill-category">
+        <div class="skill-category-name">// Other Tools</div>
+        <div class="tag-cloud">
+          <span class="tag">HashiCorp Vault</span>
+          <span class="tag">Kafka</span>
+          <span class="tag">Kong Gateway</span>
+          <span class="tag">HAProxy</span>
+          <span class="tag">Nginx</span>
+          <span class="tag">NewRelic</span>
+          <span class="tag">MySQL</span>
+          <span class="tag">MongoDB</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Education</div>
+      <div class="edu-block">
+        <div class="edu-school">Institut Teknologi Sepuluh Nopember (ITS) Surabaya</div>
+        <div class="edu-degree">B.Sc. Information Technology</div>
+        <div class="edu-year">2015 – 2019</div>
+        <div class="edu-thesis">Final Project: Headless Browser Implementation for Load Testing of Web Services Using Docker Infrastructure</div>
+      </div>
+    </div>
+
+  </aside>
+
+  <!-- ══ MAIN ═════════════════════════════════════════════ -->
+  <main class="main">
+
+    <!-- About -->
+    <section class="section">
+      <div class="section-header">
+        <div class="section-title"><span>//</span> About</div>
+        <div class="section-line"></div>
+      </div>
+      <div class="summary-card">
+        Results-driven SRE and DevOps engineer with <strong>6+ years of experience</strong> designing resilient infrastructure, automating operational workflows, and driving platform reliability at scale. Deeply passionate about <strong>eliminating toil</strong>, enforcing GitOps practices, and building observable, self-healing systems on <strong>Kubernetes and GCP</strong>. Known for a pragmatic, collaborative approach and a relentless drive to automate the manual.
+      </div>
+    </section>
+
+    <!-- Work Experience -->
+    <section class="section">
+      <div class="section-header">
+        <div class="section-title"><span>//</span> Work Experience</div>
+        <div class="section-line"></div>
+      </div>
+
+      <div class="timeline">
+
+        <!-- Ajaib Senior SRE -->
+        <div class="timeline-item">
+          <div class="timeline-dot active"></div>
+          <div class="timeline-card">
+            <div class="job-header">
+              <div>
+                <div class="job-company">PT Sentra Layanan Teknologi · Ajaib Group</div>
+                <div class="job-title senior">Senior Site Reliability Engineer</div>
+              </div>
+              <div class="job-period">Jan 2024 – Present</div>
+            </div>
+            <ul class="job-bullets">
+              <li>Architected and implemented scalable infrastructure and CI/CD pipelines on GCP using Terraform, Terragrunt, Atlantis, and Ansible</li>
+              <li>Standardized application deployment workflows with Istio, Flagger (Canary releases), Jenkins (JCasC, JobDSL), and ArgoCD</li>
+              <li>Built and maintained a highly available observability stack — CortexMetrics, VictoriaMetrics, Thanos, Loki, Alertmanager, Grafana — with automated dashboard provisioning via Grafonnet</li>
+              <li>Led service and database migrations from Aliyun and AWS to GCP (GKE), delivering zero-downtime transitions</li>
+              <li>Established and enforced engineering best practices for infrastructure, deployment workflows, and observability conventions</li>
+              <li>Implemented secure secret management for internal tooling using Google KMS and Ansible</li>
+              <li>Drove cloud cost optimization initiatives, improving resource efficiency and platform sustainability</li>
+              <li>Developed custom exporters, webhook integrations, and automated operational workflows to eliminate toil</li>
+              <li>Created GitHub Actions workflows to enforce GitOps practices and streamline developer collaboration</li>
+              <li>Built and championed an on-call culture; led incident response efforts to uphold high reliability and accountability</li>
+              <li>Evaluated and introduced new tools and technologies through structured proof-of-concept (PoC) initiatives</li>
+              <li>Partnered with cross-functional teams to accelerate daily operations and drive continuous platform improvement</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Promotion connector -->
+        <div class="timeline-connector">
+          <span class="connector-arrow">↑</span>
+          <span class="connector-label">Promoted at same company</span>
+        </div>
+
+        <!-- Ajaib SRE -->
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-card">
+            <div class="job-header">
+              <div>
+                <div class="job-company">PT Sentra Layanan Teknologi · Ajaib Group</div>
+                <div class="job-title">Site Reliability Engineer</div>
+              </div>
+              <div class="job-period">Apr 2022 – Dec 2023</div>
+            </div>
+            <ul class="job-bullets">
+              <li>Maintained and enhanced the observability stack (CortexMetrics, VictoriaMetrics, Thanos, Loki, Grafana) to ensure comprehensive monitoring coverage across services</li>
+              <li>Collaborated closely on Automated Self-Service Platform and AI integration initiatives</li>
+              <li>Supported service and database migrations from Aliyun and AWS to GCP (GKE)</li>
+              <li>Implemented and maintained CI/CD pipeline configurations using Jenkins and ArgoCD</li>
+              <li>Developed custom monitoring exporters and automation scripts to reduce operational toil</li>
+              <li>Managed cloud infrastructure resources using Terraform and Terragrunt within GitOps workflows</li>
+              <li>Participated in on-call rotations and contributed to incident response and post-mortem processes</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Tiket SRE -->
+        <div class="timeline-item" style="margin-top: 20px;">
+          <div class="timeline-dot"></div>
+          <div class="timeline-card">
+            <div class="job-header">
+              <div>
+                <div class="job-company">PT Global Tiket Network · Tiket.com</div>
+                <div class="job-title">Site Reliability Engineer</div>
+              </div>
+              <div class="job-period">Apr 2021 – Apr 2022</div>
+            </div>
+            <ul class="job-bullets">
+              <li>Built and maintained a production-grade monitoring and alerting stack using Prometheus, Thanos, Grafana, and Telegraf on GKE</li>
+              <li>Provisioned and managed infrastructure as code using Terraform and Ansible</li>
+              <li>Developed custom application metrics integrations with StatsD, Telegraf, and InfluxDB</li>
+              <li>Maintained self-managed MySQL cluster and ELK stack for logging and analytics</li>
+              <li>Managed load balancing systems with HAProxy, Nginx, and Google Cloud Load Balancer</li>
+              <li>Supported database migrations involving MongoDB and MySQL</li>
+              <li>Optimized infrastructure costs by leveraging observability insights</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Promotion connector -->
+        <div class="timeline-connector">
+          <span class="connector-arrow">↑</span>
+          <span class="connector-label">Promoted at same company</span>
+        </div>
+
+        <!-- Tiket DevOps -->
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-card">
+            <div class="job-header">
+              <div>
+                <div class="job-company">PT Global Tiket Network · Tiket.com</div>
+                <div class="job-title">DevOps Engineer</div>
+              </div>
+              <div class="job-period">Sep 2019 – Apr 2021</div>
+            </div>
+            <ul class="job-bullets">
+              <li>Planned and executed decommissioning of legacy monolith infrastructure, enabling a smooth transition to microservices architecture</li>
+              <li>Led mail server migration from AWS to GCP, minimizing downtime and improving deliverability and reliability</li>
+              <li>Supported database migrations involving MongoDB and MySQL</li>
+              <li>Provisioned and managed IaaS resources using Terraform</li>
+              <li>Automated application and tooling deployments with Ansible</li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Projects -->
+    <section class="section">
+      <div class="section-header">
+        <div class="section-title"><span>//</span> Project Experience</div>
+        <div class="section-line"></div>
+      </div>
+
+      <div class="project-grid">
+
+        <div class="project-card">
+          <div class="project-header">
+            <div>
+              <div class="project-company">PT Teknologi Kartu Indonesia · Part-Time</div>
+              <div class="project-title">Senior DevOps Engineer</div>
+            </div>
+            <div class="project-period">Aug 2024 – Dec 2024</div>
+          </div>
+          <ul class="project-bullets">
+            <li>Designed and managed on-premise infrastructure including networking with Mikrotik and bare metal server provisioning</li>
+            <li>Built and maintained a Proxmox cluster hosting virtual machines, containers, and a self-managed Kubernetes cluster</li>
+            <li>Implemented CI/CD strategy and automation using Jenkins (JCasC, JobDSL) and ArgoCD</li>
+            <li>Established secure remote access via VPN to VMs and bare metal infrastructure</li>
+            <li>Maintained load balancing systems using HAProxy, Nginx, and Kong Gateway for high availability</li>
+            <li>Enforced GitOps practices for all Kubernetes infrastructure changes, ensuring traceable and controlled configuration updates</li>
+            <li>Secured sensitive data with HashiCorp Vault for secret management across systems</li>
+            <li>Led AWS-to-bare-metal migration to reduce cloud dependency and optimize costs</li>
+            <li>Automated repetitive operational tasks to reduce manual intervention and improve system reliability</li>
+          </ul>
+        </div>
+
+        <div class="project-card">
+          <div class="project-header">
+            <div>
+              <div class="project-company">DPTSI ITS · Part-Time</div>
+              <div class="project-title">Fullstack Engineer</div>
+            </div>
+            <div class="project-period">Jul 2018 – Nov 2018</div>
+          </div>
+          <ul class="project-bullets">
+            <li>Deployed and maintained Nginx and MySQL on DigitalOcean</li>
+            <li>Built and maintained the SMA Double Track website for East Java 2018</li>
+          </ul>
+        </div>
+
+        <div class="project-card">
+          <div class="project-header">
+            <div>
+              <div class="project-company">Dinas Pendidikan Sidoarjo · Part-Time</div>
+              <div class="project-title">Fullstack Engineer</div>
+            </div>
+            <div class="project-period">Mar 2017 – Jul 2018</div>
+          </div>
+          <ul class="project-bullets">
+            <li>Deployed and maintained Nginx and MySQL on DigitalOcean</li>
+            <li>Built and maintained the PPDB (student enrollment) website using PHP CodeIgniter</li>
+            <li>Automated enrollment result reporting using a PDF generator</li>
+          </ul>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ══ FOOTER ═══════════════════════════════════════════ -->
+  <footer class="site-footer">
+    <div class="footer-text">
+      <span>cahya@resume</span>:~$ echo "Built for reliability, designed to scale."
+    </div>
+    <div class="footer-text">
+      Last updated: <span>May 2025</span>
+    </div>
+  </footer>
+
 </div>
+
+</body>
+</html>
